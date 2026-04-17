@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAMA Éduc</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      background: #f5f5f5;
+      color: #333;
+    }
+    header {
+      background: #0073e6;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    button {
+      background: #ff6600;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 5px;
+    }
+    button:hover { background: #e65c00; }
+    section {
+      padding: 40px;
+      text-align: center;
+    }
+    .courses {
+      background: #fff;
+      margin: 20px auto;
+      padding: 20px;
+      max-width: 600px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .images img {
+      width: 200px;
+      margin: 10px;
+      border-radius: 8px;
+    }
+    .login-form {
+      max-width: 400px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Bienvenue sur SAMA Éduc</h1>
+    <button onclick="scrollToCourses()">Commencer</button>
+  </header>
+
+  <!-- Section C: Images personnalisées -->
+  <section class="images">
+    <h2>Nos valeurs en images</h2>
+    <img src="images/education.jpg" alt="Éducation">
+    <img src="images/motivation.jpg" alt="Motivation">
+    <img src="images/community.jpg" alt="Communauté">
+  </section>
+
+  <!-- Section A: Cours -->
+  <section id="courses" class="courses">
+    <h2>Nos cours disponibles</h2>
+    <p>Découvrez des modules interactifs pour apprendre, progresser et partager vos connaissances.</p>
+    <ul>
+      <li>💡 Introduction au numérique</li>
+      <li>🌍 Langues et communication</li>
+      <li>🚀 Développement personnel</li>
+    </ul>
+  </section>
+
+  <!-- Section B: Connexion / Inscription -->
+  <section class="login-form">
+    <h2>Connexion / Inscription</h2>
+    <form onsubmit="handleLogin(event)">
+      <input type="text" id="username" placeholder="Nom d'utilisateur" required>
+      <input type="password" id="password" placeholder="Mot de passe" required>
+      <button type="submit">Se connecter</button>
+    </form>
+    <p>Pas encore membre ? <a href="#">Inscrivez-vous ici</a></p>
+  </section>
+
+  <script>
+    // Option A: Bouton "Commencer" descend vers les cours
+    function scrollToCourses() {
+      document.getElementById("courses").scrollIntoView({ behavior: "smooth" });
+    }
+
+    // Option B: Interaction simple pour la connexion
+    function handleLogin(event) {
+      event.preventDefault();
+      const user = document.getElementById("username").value;
+      alert("Bienvenue " + user + " ! 🎉");
+    }
+  </script>
+
+</body>
+</html>
