@@ -208,3 +208,157 @@
 
 </body>
 </html>
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAMA Éduc</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f5f5f5; color:#333; transition:background 0.5s, color 0.5s; }
+    header { background:#0073e6; color:white; padding:20px; text-align:center; position:relative; }
+    nav { display:none; flex-direction:column; gap:10px; background:#005bb5; padding:10px; position:absolute; top:60px; left:0; right:0; }
+    nav a { color:white; text-decoration:none; font-weight:bold; }
+    .menu-btn { position:absolute; top:20px; left:20px; background:#ff6600; border:none; padding:10px; border-radius:5px; cursor:pointer; }
+    button:hover { background:#e65c00; transform:scale(1.05); }
+    section { padding:40px; text-align:center; }
+    .box { background:#fff; margin:20px auto; padding:20px; max-width:800px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+    input, textarea { width:80%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:5px; }
+    .story { border-bottom:1px solid #ddd; padding:10px; text-align:left; }
+    .story button { margin-left:10px; background:#0073e6; color:white; border:none; padding:5px; border-radius:3px; cursor:pointer; }
+    .dark { background:#222; color:#eee; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <button class="menu-btn" onclick="toggleMenu()">☰ Menu</button>
+    <h1>Bienvenue sur SAMA Éduc</h1>
+    <button onclick="scrollToSection('cours')">Commencer</button>
+    <nav id="menu">
+      <a href="#cours">Cours</a>
+      <a href="#inscription">Connexion</a>
+      <a href="#galerie">Galerie</a>
+      <a href="#abonnement">Abonnement</a>
+      <a href="#histoires">Histoires</a>
+      <button onclick="toggleDarkMode()">🌙 Mode sombre</button>
+      <button onclick="showAdminDashboard()">🔐 Admin</button>
+    </nav>
+  </header>
+
+  <!-- Histoires -->
+  <section id="histoires" class="box">
+    <h2>Histoires et Témoignages</h2>
+    <textarea id="story" placeholder="Écrivez votre histoire ici..." rows="5"></textarea><br>
+    <button onclick="addStory()">Publier</button>
+    <div id="storiesList"></div>
+  </section>
+
+  <!-- Tableau de bord admin -->
+  <section id="admin" class="box" style="display:none;">
+    <h2>Tableau de bord Admin</h2>
+    <p>Bienvenue, administrateur !</p>
+
+    <h3>Gestion des abonnés</h3>
+    <div id="adminSubscribers"></div>
+
+    <h3>Gestion des histoires</h3>
+    <div id="adminStories"></div>
+  </section>
+
+  <script>
+    // Menu toggle
+    function toggleMenu() {
+      const menu = document.getElementById("menu");
+      menu.style.display = (menu.style.display === "flex") ? "none" : "flex";
+    }
+
+    // Scroll fluide
+    function scrollToSection(id) {
+      document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+    }
+
+    // Mode sombre
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark");
+    }
+
+    // Ajouter une histoire
+    function addStory() {
+      const story = document.getElementById("story").value;
+      if(story.trim() !== "") {
+        let stories = JSON.parse(localStorage.getItem("stories")) || [];
+        stories.push(story);
+        localStorage.setItem("stories", JSON.stringify(stories));
+        document.getElementById("story").value = "";
+        displayStories();
+      }
+    }
+
+    // Supprimer une histoire
+    function deleteStory(index) {
+      let stories = JSON.parse(localStorage.getItem("stories")) || [];
+      stories.splice(index, 1);
+      localStorage.setItem("stories", JSON.stringify(stories));
+      displayStories();
+      loadAdminData();
+    }
+
+    // Éditer une histoire
+    function editStory(index) {
+      let stories = JSON.parse(localStorage.getItem("stories")) || [];
+      const newText = prompt("Modifier l'histoire :", stories[index]);
+      if(newText !== null && newText.trim() !== "") {
+        stories[index] = newText;
+        localStorage.setItem("stories", JSON.stringify(stories));
+        displayStories();
+        loadAdminData();
+      }
+    }
+
+    // Afficher les histoires
+    function displayStories() {
+      let stories = JSON.parse(localStorage.getItem("stories")) || [];
+      const div = document.getElementById("storiesList");
+      div.innerHTML = "<h3>Histoires publiées :</h3>" + stories.map((s,i) => 
+        `<div class="story">📝 ${s}
+          <button onclick="editStory(${i})">✏️ Modifier</button>
+          <button onclick="deleteStory(${i})">🗑️ Supprimer</button>
+        </div>`).join("");
+    }
+
+    // Tableau de bord admin
+    function showAdminDashboard() {
+      const pass = prompt("Entrez le mot de passe admin :");
+      if(pass === "SAMA2026") { // 🔑 change ce mot de passe
+        document.getElementById("admin").style.display = "block";
+        loadAdminData();
+      } else {
+        alert("Accès refusé !");
+      }
+    }
+
+    // Charger les données dans le tableau de bord
+    function loadAdminData() {
+      // Abonnés
+      let subscribers = JSON.parse(localStorage.getItem("subscribers")) || [];
+      document.getElementById("adminSubscribers").innerHTML =
+        "<ul>" + subscribers.map(e => "<li>" + e + "</li>").join("") + "</ul>";
+
+      // Histoires
+      let stories = JSON.parse(localStorage.getItem("stories")) || [];
+      document.getElementById("adminStories").innerHTML =
+        stories.map((s,i) => 
+          `<div class="story">📝 ${s}
+            <button onclick="editStory(${i})">✏️ Modifier</button>
+            <button onclick="deleteStory(${i})">🗑️ Supprimer</button>
+          </div>`).join("");
+    }
+
+    // Charger les histoires au démarrage
+    window.onload = displayStories;
+  </script>
+
+</body>
+</html>
