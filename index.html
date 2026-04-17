@@ -114,3 +114,136 @@
 
 </body>
 </html>
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0; padding: 0;
+  background: #f5f5f5;
+  color: #333;
+}
+
+header {
+  background: #0073e6;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+button {
+  background: #ff6600;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: transform 0.3s, background 0.3s;
+}
+
+button:hover { 
+  background: #e65c00; 
+  transform: scale(1.1);
+}
+
+section {
+  padding: 40px;
+  text-align: center;
+}
+
+.courses, .login-form {
+  background: #fff;
+  margin: 20px auto;
+  padding: 20px;
+  max-width: 600px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.images img {
+  width: 200px;
+  margin: 10px;
+  border-radius: 8px;
+  transition: transform 0.5s ease-in-out;
+}
+
+.images img:hover {
+  transform: rotate(3deg) scale(1.1);
+}
+
+.dark {
+  background: #222;
+  color: #eee;
+}
+
+// Scroll fluide vers les cours
+function scrollToCourses() {
+  document.getElementById("cours").scrollIntoView({ behavior: "smooth" });
+}
+
+// Mode sombre
+function toggleDarkMode() {
+  document.body.classList.toggle("dark");
+  document.body.style.transition = "background 0.5s, color 0.5s";
+}
+
+// Connexion simple
+function handleLogin(event) {
+  event.preventDefault();
+  const user = document.getElementById("username").value;
+  alert("Bienvenue " + user + " ! 🎉");
+}
+
+// Interaction avec images
+document.querySelectorAll(".hover-img").forEach(img => {
+  img.addEventListener("click", () => {
+    alert("Tu as cliqué sur : " + img.alt);
+  });
+});
+
+// Animation d’apparition des cours
+window.addEventListener("scroll", () => {
+  const courses = document.getElementById("cours");
+  const position = courses.getBoundingClientRect().top;
+  if (position < window.innerHeight) {
+    courses.style.opacity = 1;
+    courses.style.transform = "translateY(0)";
+
+                 # Sama-Teach16
+
+Bienvenue sur **Sama-Teach16**, un projet éducatif interactif hébergé sur GitHub Pages.
+
+## 📂 Structure du projet
+
+                 ## 🚀 Mise en ligne avec GitHub Pages
+1. Allez dans **Paramètres** → **Pages**.
+2. Sélectionnez la branche `main` et le dossier `/root`.
+3. Cliquez sur **Save**.
+4. Votre site sera disponible à l’adresse :
+   `https://christstill307-hash.github.io/Sama-Teach16/`
+
+## ✨ Fonctionnalités principales
+- **Option A** : Bouton *Commencer* qui descend vers la section des cours.
+- **Option B** : Formulaire de connexion/inscription avec interaction JavaScript.
+- **Option C** : Images personnalisées avec effets au survol.
+- **Mode sombre** : Activation/désactivation avec transition fluide.
+- **Animations** : Apparition des cours et effets sur les boutons.
+
+## 📸 Images
+Ajoutez vos images dans le dossier `images/` avec des noms simples et sans espaces (ex: `education.jpg`).
+
+## 📜 Licence
+Ce projet est libre d’utilisation et peut être adapté pour vos besoins éducatifs.
+  }
+});
