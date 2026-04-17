@@ -10,76 +10,96 @@
       margin: 0; padding: 0;
       background: #f5f5f5;
       color: #333;
+      transition: background 0.5s, color 0.5s;
     }
     header {
       background: #0073e6;
       color: white;
       padding: 20px;
       text-align: center;
+      position: relative;
     }
-    button {
-      background: #ff6600;
+    nav {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      background: #005bb5;
+      padding: 10px;
+      position: absolute;
+      top: 60px; left: 0; right: 0;
+    }
+    nav a {
       color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .menu-btn {
+      position: absolute;
+      top: 20px; left: 20px;
+      background: #ff6600;
       border: none;
-      padding: 12px 20px;
-      cursor: pointer;
-      font-size: 16px;
+      padding: 10px;
       border-radius: 5px;
+      cursor: pointer;
     }
-    button:hover { background: #e65c00; }
-    section {
-      padding: 40px;
-      text-align: center;
-    }
-    .courses {
+    button:hover { background: #e65c00; transform: scale(1.05); }
+    section { padding: 40px; text-align: center; }
+    .box {
       background: #fff;
       margin: 20px auto;
       padding: 20px;
-      max-width: 600px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .images img {
-      width: 200px;
-      margin: 10px;
-      border-radius: 8px;
-    }
-    .login-form {
-      max-width: 400px;
-      margin: 20px auto;
-      background: #fff;
-      padding: 20px;
+      max-width: 800px;
       border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
     input {
-      width: 100%;
+      width: 80%;
       padding: 10px;
       margin: 10px 0;
       border: 1px solid #ccc;
       border-radius: 5px;
     }
+    .images img, video {
+      width: 200px;
+      margin: 10px;
+      border-radius: 8px;
+      transition: transform 0.5s ease-in-out;
+    }
+    .images img:hover, video:hover { transform: rotate(3deg) scale(1.1); }
+    .dark { background: #222; color: #eee; }
   </style>
 </head>
 <body>
 
   <header>
+    <button class="menu-btn" onclick="toggleMenu()">☰ Menu</button>
     <h1>Bienvenue sur SAMA Éduc</h1>
-    <button onclick="scrollToCourses()">Commencer</button>
+    <button onclick="scrollToSection('cours')">Commencer</button>
+    <nav id="menu">
+      <a href="#cours">Cours</a>
+      <a href="#inscription">Connexion</a>
+      <a href="#galerie">Galerie</a>
+      <a href="#abonnement">Abonnement</a>
+      <a href="#histoires">Histoires</a>
+      <button onclick="toggleDarkMode()">🌙 Mode sombre</button>
+    </nav>
   </header>
 
-  <!-- Section C: Images personnalisées -->
-  <section class="images">
-    <h2>Nos valeurs en images</h2>
+  <!-- Galerie multimédia -->
+  <section id="galerie" class="box images">
+    <h2>Galerie interactive</h2>
     <img src="images/education.jpg" alt="Éducation">
     <img src="images/motivation.jpg" alt="Motivation">
-    <img src="images/community.jpg" alt="Communauté">
+    <video controls>
+      <source src="videos/demo.mp4" type="video/mp4">
+      Votre navigateur ne supporte pas la vidéo.
+    </video>
+    <p>Ajoutez ici vos photos, vidéos et textes pour vos invités.</p>
   </section>
 
-  <!-- Section A: Cours -->
-  <section id="courses" class="courses">
+  <!-- Cours -->
+  <section id="cours" class="box">
     <h2>Nos cours disponibles</h2>
-    <p>Découvrez des modules interactifs pour apprendre, progresser et partager vos connaissances.</p>
     <ul>
       <li>💡 Introduction au numérique</li>
       <li>🌍 Langues et communication</li>
@@ -87,163 +107,104 @@
     </ul>
   </section>
 
-  <!-- Section B: Connexion / Inscription -->
-  <section class="login-form">
+  <!-- Connexion / Inscription -->
+  <section id="inscription" class="box">
     <h2>Connexion / Inscription</h2>
     <form onsubmit="handleLogin(event)">
       <input type="text" id="username" placeholder="Nom d'utilisateur" required>
       <input type="password" id="password" placeholder="Mot de passe" required>
       <button type="submit">Se connecter</button>
     </form>
-    <p>Pas encore membre ? <a href="#">Inscrivez-vous ici</a></p>
+    <p>Pas encore membre ? <a href="#abonnement">Inscrivez-vous ici</a></p>
+  </section>
+
+  <!-- Abonnement -->
+  <section id="abonnement" class="box">
+    <h2>S'abonner à SAMA Éduc</h2>
+    <form onsubmit="handleSubscribe(event)">
+      <input type="email" id="email" placeholder="Votre email" required>
+      <button type="submit">S'abonner</button>
+    </form>
+    <p>Recevez nos cours, vidéos et actualités directement par email.</p>
+    <div id="subscribers"></div>
+  </section>
+
+  <!-- Histoires -->
+  <section id="histoires" class="box">
+    <h2>Histoires et Témoignages</h2>
+    <textarea id="story" placeholder="Écrivez votre histoire ici..." rows="5"></textarea><br>
+    <button onclick="addStory()">Publier</button>
+    <div id="storiesList"></div>
   </section>
 
   <script>
-    // Option A: Bouton "Commencer" descend vers les cours
-    function scrollToCourses() {
-      document.getElementById("courses").scrollIntoView({ behavior: "smooth" });
+    // Menu toggle
+    function toggleMenu() {
+      const menu = document.getElementById("menu");
+      menu.style.display = (menu.style.display === "flex") ? "none" : "flex";
     }
 
-    // Option B: Interaction simple pour la connexion
+    // Scroll fluide
+    function scrollToSection(id) {
+      document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+    }
+
+    // Mode sombre
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark");
+    }
+
+    // Connexion avec stockage
     function handleLogin(event) {
       event.preventDefault();
       const user = document.getElementById("username").value;
-      alert("Bienvenue " + user + " ! 🎉");
+      localStorage.setItem("user", user);
+      alert("Bienvenue " + user + " ! 🎉 Vous êtes connecté.");
     }
+
+    // Abonnement avec stockage
+    function handleSubscribe(event) {
+      event.preventDefault();
+      const email = document.getElementById("email").value;
+      let subscribers = JSON.parse(localStorage.getItem("subscribers")) || [];
+      subscribers.push(email);
+      localStorage.setItem("subscribers", JSON.stringify(subscribers));
+      alert("Merci pour votre abonnement, " + email + " ! 📩");
+      displaySubscribers();
+    }
+
+    // Afficher abonnés
+    function displaySubscribers() {
+      let subscribers = JSON.parse(localStorage.getItem("subscribers")) || [];
+      const div = document.getElementById("subscribers");
+      div.innerHTML = "<h3>Liste des abonnés :</h3><ul>" + subscribers.map(e => "<li>" + e + "</li>").join("") + "</ul>";
+    }
+
+    // Ajouter une histoire
+    function addStory() {
+      const story = document.getElementById("story").value;
+      if(story.trim() !== "") {
+        let stories = JSON.parse(localStorage.getItem("stories")) || [];
+        stories.push(story);
+        localStorage.setItem("stories", JSON.stringify(stories));
+        document.getElementById("story").value = "";
+        displayStories();
+      }
+    }
+
+    // Afficher les histoires
+    function displayStories() {
+      let stories = JSON.parse(localStorage.getItem("stories")) || [];
+      const div = document.getElementById("storiesList");
+      div.innerHTML = "<h3>Histoires publiées :</h3>" + stories.map(s => "<p>📝 " + s + "</p>").join("");
+    }
+
+    // Charger abonnés et histoires au démarrage
+    window.onload = () => {
+      displaySubscribers();
+      displayStories();
+    };
   </script>
 
 </body>
 </html>
-
-body {
-  font-family: Arial, sans-serif;
-  margin: 0; padding: 0;
-  background: #f5f5f5;
-  color: #333;
-}
-
-header {
-  background: #0073e6;
-  color: white;
-  padding: 20px;
-  text-align: center;
-}
-
-nav {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 10px;
-}
-
-nav a {
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-button {
-  background: #ff6600;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: transform 0.3s, background 0.3s;
-}
-
-button:hover { 
-  background: #e65c00; 
-  transform: scale(1.1);
-}
-
-section {
-  padding: 40px;
-  text-align: center;
-}
-
-.courses, .login-form {
-  background: #fff;
-  margin: 20px auto;
-  padding: 20px;
-  max-width: 600px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-.images img {
-  width: 200px;
-  margin: 10px;
-  border-radius: 8px;
-  transition: transform 0.5s ease-in-out;
-}
-
-.images img:hover {
-  transform: rotate(3deg) scale(1.1);
-}
-
-.dark {
-  background: #222;
-  color: #eee;
-}
-
-// Scroll fluide vers les cours
-function scrollToCourses() {
-  document.getElementById("cours").scrollIntoView({ behavior: "smooth" });
-}
-
-// Mode sombre
-function toggleDarkMode() {
-  document.body.classList.toggle("dark");
-  document.body.style.transition = "background 0.5s, color 0.5s";
-}
-
-// Connexion simple
-function handleLogin(event) {
-  event.preventDefault();
-  const user = document.getElementById("username").value;
-  alert("Bienvenue " + user + " ! 🎉");
-}
-
-// Interaction avec images
-document.querySelectorAll(".hover-img").forEach(img => {
-  img.addEventListener("click", () => {
-    alert("Tu as cliqué sur : " + img.alt);
-  });
-});
-
-// Animation d’apparition des cours
-window.addEventListener("scroll", () => {
-  const courses = document.getElementById("cours");
-  const position = courses.getBoundingClientRect().top;
-  if (position < window.innerHeight) {
-    courses.style.opacity = 1;
-    courses.style.transform = "translateY(0)";
-
-                 # Sama-Teach16
-
-Bienvenue sur **Sama-Teach16**, un projet éducatif interactif hébergé sur GitHub Pages.
-
-## 📂 Structure du projet
-
-                 ## 🚀 Mise en ligne avec GitHub Pages
-1. Allez dans **Paramètres** → **Pages**.
-2. Sélectionnez la branche `main` et le dossier `/root`.
-3. Cliquez sur **Save**.
-4. Votre site sera disponible à l’adresse :
-   `https://christstill307-hash.github.io/Sama-Teach16/`
-
-## ✨ Fonctionnalités principales
-- **Option A** : Bouton *Commencer* qui descend vers la section des cours.
-- **Option B** : Formulaire de connexion/inscription avec interaction JavaScript.
-- **Option C** : Images personnalisées avec effets au survol.
-- **Mode sombre** : Activation/désactivation avec transition fluide.
-- **Animations** : Apparition des cours et effets sur les boutons.
-
-## 📸 Images
-Ajoutez vos images dans le dossier `images/` avec des noms simples et sans espaces (ex: `education.jpg`).
-
-## 📜 Licence
-Ce projet est libre d’utilisation et peut être adapté pour vos besoins éducatifs.
-  }
-});
